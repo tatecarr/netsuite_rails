@@ -109,7 +109,13 @@ module NetSuiteRails
         # TODO support ActiveJob
 
         if local.respond_to?(:delay)
-          local.delay.send(action, action_options)
+
+          if sync_options.has_key?(:push_priority)
+             push_priority = local.instance_exec(&sync_options[:push_priority])
+          end
+
+          # || 0 should probably be "|| queue default" since that's technically configurable... how to get?
+          local.delay(priority: push_priority || 0).send(action, action_options)
         else
           raise 'no supported delayed job method found'
         end

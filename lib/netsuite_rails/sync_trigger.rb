@@ -110,12 +110,17 @@ module NetSuiteRails
 
         if local.respond_to?(:delay)
 
-          if sync_options.has_key?(:push_priority)
-             push_priority = local.instance_exec(&sync_options[:push_priority])
+          queue_options = {}
+
+          if sync_options.has_key?(:queue_options)
+            queue_options = if sync_options[:queue_options].is_a?(Proc)
+             local.instance_exec(&sync_options[:queue_options])
+           else
+             sync_options[:queue_options]
+           end
           end
 
-          # || 0 should probably be "|| queue default" since that's technically configurable... how to get?
-          local.delay(priority: push_priority || 0).send(action, action_options)
+          local.delay(queue_options).send(action, action_options)
         else
           raise 'no supported delayed job method found'
         end

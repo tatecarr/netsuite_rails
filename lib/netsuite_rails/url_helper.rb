@@ -4,7 +4,7 @@ module NetSuiteRails
     # TODO create a xxx_netsuite_url helper generator
 
     def self.netsuite_url(record = self)
-      domain = NetSuite::Configuration.wsdl_domain.sub('webservices.', 'system.')
+      domain = NetSuite::Configuration.wsdl_domain.sub('webservices.', 'system.').sub('suitetalk.api', 'app')
       prefix = "https://#{domain}/app"
 
       if record.class.to_s.start_with?('NetSuite::Records')

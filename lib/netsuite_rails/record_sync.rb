@@ -200,7 +200,7 @@ module NetSuiteRails
             netsuite_record.send(netsuite_field)
           end
 
-          if field_value.blank?
+          if field_value.blank? && field_value.class != FalseClass
             # TODO possibly nil out the local value?
             next
           end
